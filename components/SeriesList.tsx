@@ -1,48 +1,38 @@
 'use client';
 import { useState } from 'react';
 import Image from 'next/image';
-import { Series } from '../app/types/series';
+import Link from 'next/link';
 
 interface SeriesListProps {
-  series: Series[];
+  series: any[];
 }
 
 export default function SeriesList({ series }: SeriesListProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
       {series.map((serie) => (
-        <div key={serie._id} className="bg-card rounded-lg overflow-hidden shadow-lg">
-          <div className="relative h-48">
-            <Image
-              src={serie.poster}
-              alt={serie.title}
-              fill
-              className="object-cover"
-            />
-          </div>
-          <div className="p-4">
-            <h3 className="text-xl font-bold mb-2">{serie.title}</h3>
-            <p className="text-gray-600 mb-2">{serie.description}</p>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <span className="text-yellow-400">★</span>
-                <span className="ml-1">{serie.rating.toFixed(1)}</span>
-                <span className="ml-2 text-gray-500">({serie.numberOfRatings} reviews)</span>
+        <Link href={`/series/${serie._id}`} key={serie._id}>
+          <div className="group relative transition-transform duration-200 ease-in-out hover:scale-105">
+            <div className="aspect-[2/3] rounded-md overflow-hidden">
+              <Image
+                src={serie.poster}
+                alt={serie.title}
+                width={300}
+                height={450}
+                className="object-cover w-full h-full"
+              />
+            </div>
+            
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+              <h3 className="text-white font-semibold">{serie.title}</h3>
+              <div className="flex items-center space-x-2 text-sm text-gray-300">
+                <span>{serie.rating.toFixed(1)} ★</span>
+                <span>•</span>
+                <span>{serie.year}</span>
               </div>
-              <span className="text-gray-500">{serie.views} views</span>
-            </div>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {serie.genres.map((genre) => (
-                <span
-                  key={genre}
-                  className="px-2 py-1 bg-primary/10 text-primary rounded-full text-sm"
-                >
-                  {genre}
-                </span>
-              ))}
             </div>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );
