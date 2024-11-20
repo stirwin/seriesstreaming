@@ -17,6 +17,7 @@ interface Series {
     title: string;
     description: string;
     poster: string;
+    backdrop: string;
     badge?: string;
     rating?: number;
     year?: number;
@@ -28,6 +29,7 @@ function Herosection({ series }: { series: Series[] }) {
         Autoplay({ delay: 4000, stopOnInteraction: true })
     )
 
+    console.log(series);
     if (!series || series.length === 0) {
         return (
             <div className="w-full h-screen bg-gray-900 flex items-center justify-center">
@@ -52,7 +54,7 @@ function Herosection({ series }: { series: Series[] }) {
                     <CarouselItem key={serie._id || index} className="pl-1 relative w-full">
                         <div className="w-full h-screen relative">
                             <Image
-                                src={serie.poster}
+                                src={serie.backdrop}
                                 alt={serie.title || 'Serie poster'}
                                 fill
                                 className="object-cover"

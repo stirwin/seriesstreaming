@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import UserIcon from '@/components/UserIcon';
 import { Bell, Divide, Search } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Navbar() {
     const { data: session, status } = useSession();
@@ -12,12 +13,21 @@ export default function Navbar() {
 
     return (
         <nav className="fixed top-0 w-full z-50 bg-gradient-to-b from-black/80 to-transparent">
-            <div className="flex items-center justify-between px-4 py-2">
+            <div className="flex items-center justify-between px-16 py-4">
                 {status === "authenticated" ? (
-                    <div className="flex items-center space-x-8">
-                        <Link href="/" className="text-red-600 font-bold text-3xl">
-                            NETFLIX
-                        </Link>
+                    <div className="flex items-center space-x-8 ">
+                        <div className='flex justify-center items-center'>
+                            <Link href="/">
+                                <Image
+                                    src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg"
+                                    alt="Netflix Logo"
+                                    width={93}
+                                    height={30}
+                                />
+                            </Link>
+                        </div>
+
+
 
                         {/* Navigation Links */}
                         <div className="hidden md:flex space-x-4 text-sm text-gray-300">
