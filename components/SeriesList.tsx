@@ -1,17 +1,23 @@
 'use client';
 import { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import ShowDetails from './ShowDetails';
+import { useModal } from '@/context/ModalContext';
 
 interface SeriesListProps {
   series: any[];
 }
 
 export default function SeriesList({ series }: SeriesListProps) {
+  const { openModal } = useModal();
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
       {series.map((serie) => (
-        <Link href={`/series/${serie._id}`} key={serie._id}>
+        <div
+          className='cursor-pointer' 
+          key={serie._id}
+          onClick={() => openModal(serie)}
+        >
           <div className="group relative transition-transform duration-200 ease-in-out hover:scale-105">
             <div className="aspect-[2/3] rounded-md overflow-hidden">
               <Image
@@ -32,8 +38,10 @@ export default function SeriesList({ series }: SeriesListProps) {
               </div>
             </div>
           </div>
-        </Link>
+        </div>
       ))}
+
+      <ShowDetails />
     </div>
   );
 }

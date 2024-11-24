@@ -3,6 +3,7 @@ import SeriesList from '@/components/SeriesList';
 import { GenreFilter } from '@/components/GenreFilter';
 import { getSeries } from '@/actions/seriesActions';
 import Herosection from '@/components/Herosection';
+import { ModalProvider } from '@/context/ModalContext';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,11 +19,11 @@ export default async function Home({
 }) {
   const genre = searchParams?.genre || undefined;
   const search = searchParams?.search || undefined;
-  
+
   const series = await getSeries(genre, search);
 
   console.log(series);
- 
+
   // Si no hay series, mostrar un mensaje
   if (!series || series.length === 0) {
     return (
@@ -36,7 +37,7 @@ export default async function Home({
     <div className="min-h-screen bg-[#141414]">
       {/* Hero Section */}
       <div className="relative w-full">
-        <Herosection series={series}/>
+        <Herosection series={series} />
       </div>
 
       {/* Main Content */}
@@ -57,7 +58,9 @@ export default async function Home({
                 ))}
               </div>
             }>
-              <SeriesList series={series} />
+              <ModalProvider>
+                <SeriesList series={series} />
+              </ModalProvider>
             </Suspense>
           </section>
         </div>
