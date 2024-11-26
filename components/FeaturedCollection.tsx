@@ -49,10 +49,10 @@ export default function FeaturedCollection({ series }: { series: Series[] }) {
               />
               <div className="absolute top-2 right-2">
                 <Image
-                  src="/hbo-logo.svg"
+                  src="https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg"
                   alt="HBO"
-                  width={40}
-                  height={20}
+                  width={120}
+                        height={40}
                   className="opacity-80"
                 />
               </div>
