@@ -1,12 +1,25 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { ChevronDown } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const genres = ['All', 'Drama', 'Crime', 'Thriller', 'Sci-Fi', 'Horror'];
 
 export function GenreFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const currentGenre = searchParams.get('genre') || 'All';
+  const [currentGenre, setCurrentGenre] = useState(searchParams.get('genre') || 'All');
+
+  useEffect(() => {
+    setCurrentGenre(searchParams.get('genre') || 'All');
+  }, [searchParams]);
 
   const handleGenreChange = (genre: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -19,20 +32,33 @@ export function GenreFilter() {
   };
 
   return (
-    <div className="flex gap-2 flex-wrap">
-      {genres.map((genre) => (
-        <button
-          key={genre}
-          onClick={() => handleGenreChange(genre)}
-          className={`px-4 py-2 rounded-full ${
-            currentGenre === genre
-              ? 'bg-primary text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
-        >
-          {genre}
-        </button>
-      ))}
+    <div className="relative inline-block text-left">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="outline"
+            className="bg-primary border-secondary text-accent hover:bg-primary/90 hover:text-secondary"
+          >
+            {currentGenre} <ChevronDown className="ml-2 h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="bg-primary border-secondary">
+          {genres.map((genre) => (
+            <DropdownMenuItem
+              key={genre}
+              onClick={() => handleGenreChange(genre)}
+              className={`cursor-pointer ${
+                currentGenre === genre
+                  ? 'bg-secondary text-accent'
+                  : 'text-accent hover:bg-secondary/20'
+              }`}
+            >
+              {genre}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
+

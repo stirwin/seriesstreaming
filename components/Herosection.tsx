@@ -2,9 +2,10 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
 import Image from 'next/image';
 import { Button } from "./ui/button";
-import { Info, Play } from "lucide-react";
+import { Info, Play, Star } from 'lucide-react';
 import * as React from "react"
 import Autoplay from "embla-carousel-autoplay"
+import { motion } from "framer-motion";
 
 interface Season {
     _id: string;
@@ -26,14 +27,13 @@ interface Series {
 
 function Herosection({ series }: { series: Series[] }) {
     const plugin = React.useRef(
-        Autoplay({ delay: 4000, stopOnInteraction: true })
+        Autoplay({ delay: 6000, stopOnInteraction: true })
     )
 
-    console.log(series);
     if (!series || series.length === 0) {
         return (
-            <div className="w-full h-screen bg-gray-900 flex items-center justify-center">
-                <h2 className="text-white">No hay series disponibles</h2>
+            <div className="w-full h-screen bg-gradient-to-br from-purple-900 to-indigo-900 flex items-center justify-center">
+                <h2 className="text-white text-2xl font-bold">No series available</h2>
             </div>
         );
     }
@@ -49,10 +49,10 @@ function Herosection({ series }: { series: Series[] }) {
                 loop: true,
             }}
         >
-            <CarouselContent className="-ml-1">
+            <CarouselContent>
                 {series.map((serie, index) => (
-                    <CarouselItem key={serie._id || index} className="pl-1 relative w-full">
-                        <div className="w-full h-screen relative">
+                    <CarouselItem key={serie._id || index} className="relative w-full">
+                        <div className="w-full h-[80vh] relative overflow-hidden">
                             <Image
                                 src={serie.backdrop}
                                 alt={serie.title || 'Serie poster'}
@@ -60,73 +60,64 @@ function Herosection({ series }: { series: Series[] }) {
                                 className="object-cover"
                                 priority
                             />
-                            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-
-                            {/* serie */}
-                            <div className="absolute top-[25vh] left-[4%] right-[4%]">
+                            <div className="absolute inset-0 bg-gradient-to-r from-purple-900/80 via-indigo-900/60 to-transparent" />
+                            
+                            {/* Serie Info */}
+                            <motion.div 
+                                className="absolute top-1/4 left-[8%] right-[8%] text-white"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: 0.2 }}
+                            >
                                 {/* Badge */}
                                 <div className="flex items-center space-x-2 mb-4">
-                                    <div className="text-red-600 font-bold text-sm bg-red-600/20 px-2 py-1">
-                                        {serie.badge || 'Serie'}
+                                    <div className="text-xs font-bold bg-purple-500 px-2 py-1 rounded-full">
+                                        {serie.badge || 'Featured Series'}
                                     </div>
                                 </div>
 
                                 {/* Title */}
-                                <div className="w-full max-w-[600px] mb-6">
-                                    <h1 className="text-6xl md:text-8xl font-bold tracking-wide text-white">
-                                        {serie.title}
-                                    </h1>
-                                </div>
+                                <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-4 max-w-2xl">
+                                    {serie.title}
+                                </h1>
 
                                 {/* Description */}
-                                <p className="text-white text-xl max-w-[600px] mb-6">
+                                <p className="text-lg max-w-xl mb-6 text-gray-200">
                                     {serie.description}
                                 </p>
 
                                 {/* Buttons */}
                                 <div className="flex items-center space-x-4 mb-6">
-                                    <Button className="bg-white hover:bg-white/90 text-black font-semibold px-8 py-6 text-xl">
-                                        <Play className="mr-2" /> Reproducir
+                                    <Button className="bg-white text-purple-900 hover:bg-gray-200 font-semibold px-8 py-3 text-lg rounded-full transition-colors duration-300">
+                                        <Play className="mr-2 h-5 w-5" /> Watch Now
                                     </Button>
-                                    <Button variant="secondary" className="bg-gray-500/70 hover:bg-gray-500/50 text-white font-semibold px-8 py-6 text-xl">
-                                        <Info className="mr-2" /> Más información
+                                    <Button variant="outline" className="border-2 border-white bg-transparent hover:bg-white/20 text-white font-semibold px-8 py-3 text-lg rounded-full transition-colors duration-300">
+                                        <Info className="mr-2 h-5 w-5" /> More Info
                                     </Button>
                                 </div>
-                            </div>
 
-                            {/* Rating and Additional Info */}
-                            <div className="absolute bottom-[10%] right-[4%] flex items-center space-x-4">
-                                <div className="flex items-center space-x-2">
-                                    <span className="text-green-500 font-bold">
-                                        {serie.rating ? `${serie.rating.toFixed(1)}★` : 'Nueva'}
-                                    </span>
-                                    {serie.year && (
-                                        <>
-                                            <span className="text-white">•</span>
-                                            <span className="text-white">{serie.year}</span>
-                                        </>
+                                {/* Rating and Additional Info */}
+                                <div className="flex items-center space-x-4 text-sm">
+                                    {serie.rating && (
+                                        <div className="flex items-center">
+                                            <Star className="h-5 w-5 text-yellow-400 mr-1" />
+                                            <span className="font-bold">{serie.rating.toFixed(1)}</span>
+                                        </div>
                                     )}
+                                    {serie.year && <span>{serie.year}</span>}
                                     {serie.seasons && serie.seasons.length > 0 && (
-                                        <>
-                                            <span className="text-white">•</span>
-                                            <span className="text-white">
-                                                {serie.seasons.length} temporada{serie.seasons.length !== 1 ? 's' : ''}
-                                            </span>
-                                        </>
+                                        <span>{serie.seasons.length} season{serie.seasons.length !== 1 ? 's' : ''}</span>
                                     )}
                                 </div>
-                            </div>
+                            </motion.div>
                         </div>
                     </CarouselItem>
                 ))}
             </CarouselContent>
-            <div className="absolute bottom-4 right-14 flex gap-2">
-                <CarouselPrevious className="bg-white/20 hover:bg-white/30 text-white" />
-                <CarouselNext className="bg-white/20 hover:bg-white/30 text-white" />
-            </div>
+          
         </Carousel>
     );
 }
 
 export default Herosection;
+
