@@ -7,6 +7,9 @@ import { Play, Plus, ThumbsUp, Volume2, X } from 'lucide-react'
 import { useModal } from "@/context/ModalContext"
 import { ScrollArea } from "./ui/scroll-area"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select"
+import ReviewSection from "./ReviewSection"
+import { useSession } from "next-auth/react"
+import ReviewList from "./ReviewList"
 
 interface Episode {
     _id: string;
@@ -24,10 +27,14 @@ interface Season {
 export default function ShowDetails() {
     const { isOpen, closeModal, selectedSerie } = useModal()
     const [selectedSeason, setSelectedSeason] = useState(0)
+    const { data: session } = useSession();
+    const email = session?.user?.email;
 
     if (!selectedSerie) return null;
 
     console.log(selectedSerie);
+    // Verificar si el usuario ya ha hecho una reseña
+    const hasReviewed = selectedSerie.reviews.some((review: any) => review.Email === email);
 
     const handleSeasonChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedSeason(Number(event.target.value))
@@ -128,79 +135,21 @@ export default function ShowDetails() {
                                     ))}
                                 </div>
                             </div>
+                            <div className="mt-8">
+                                {!hasReviewed ? (
+                                    <ReviewSection seriesId={selectedSerie._id} />
+                                ) : (
+                                    <p className="text-green-500">Ya has hecho una reseña para esta serie.</p>
+                                )}
+                            </div>
+                            <div className="mt-8">
+                                <h2 className="text-xl font-bold">Reseñas</h2>
+                                <ReviewList reviews={selectedSerie.reviews} />
+                            </div>
                         </div>
                     </div>
                 </ScrollArea>
             </DialogContent>
-
-
-
-
-            {/* <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
-                <div className="fixed inset-x-4 top-[5%] z-50 mx-auto max-w-6xl rounded-xl bg-black shadow-lg">
-                    <div className="relative aspect-video w-full overflow-hidden rounded-t-xl">
-                        <img
-                            src={selectedSerie.backdrop}
-                            alt={selectedSerie.title}
-                            className="w-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
-                        <button
-                            onClick={closeModal}
-                            className="absolute right-4 top-4 rounded-full bg-neutral-900 p-2 hover:bg-neutral-800"
-                        >
-                            <X className="h-6 w-6" />
-                        </button>
-                        <div className="absolute bottom-6 left-6 right-6">
-                            <h1 className="mb-4 text-4xl font-bold">Arcane</h1>
-                            <div className="flex items-center gap-3">
-                                <Button size="lg" className="gap-2">
-                                    <Play className="h-5 w-5" /> Siguiente episodio
-                                </Button>
-                                <Button size="icon" variant="outline" className="rounded-full border-white/30">
-                                    <Plus className="h-6 w-6" />
-                                </Button>
-                                <Button size="icon" variant="outline" className="rounded-full border-white/30">
-                                    <ThumbsUp className="h-6 w-6" />
-                                </Button>
-                                <div className="ml-auto">
-                                    <Button size="icon" variant="outline" className="rounded-full border-white/30">
-                                        <Volume2 className="h-6 w-6" />
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="grid gap-4 p-6">
-                        <div className="flex items-center gap-4">
-                            <Badge className="bg-red-600 text-white hover:bg-red-600">TOP 10</Badge>
-                            <span className="text-sm text-green-500">N.º 3 en TV hoy</span>
-                            <span className="text-sm text-muted-foreground">2024</span>
-                            <Badge variant="outline">16+</Badge>
-                            <span className="text-sm text-muted-foreground">2 temporadas</span>
-                            <Badge variant="outline">HD</Badge>
-                        </div>
-                        <p className="text-lg">
-                            En esta saga ganadora del Emmy®, dos hermanas tienen un amargo enfrentamiento y acaban en bandos opuestos de una
-                            guerra arrasadora. «Una verdadera obra maestra» (IGN).
-                        </p>
-                        <div className="grid gap-2">
-                            <div className="text-sm">
-                                <span className="text-muted-foreground">Elenco: </span>
-                                <span>Hailee Steinfeld, Ella Purnell, Kevin Alejandro, más</span>
-                            </div>
-                            <div className="text-sm">
-                                <span className="text-muted-foreground">Géneros: </span>
-                                <span>Series de acción y aventura, Series de EE. UU., Series de fantasía</span>
-                            </div>
-                            <div className="text-sm">
-                                <span className="text-muted-foreground">Este título es: </span>
-                                <span>Crudo, Imaginativo</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> */}
         </Dialog >
 
     )

@@ -1,12 +1,10 @@
 import { Schema, model, models } from 'mongoose';
 
 const reviewSchema = new Schema({
-  userId: { type: String, required: true },
   userName: { type: String, required: true },
+  Email: { type: String, required: false }, // Asegúrate de que este campo esté presente
   rating: { type: Number, required: true, min: 1, max: 5 },
   comment: { type: String, required: true },
-  likes: { type: Number, default: 0 },
-  dislikes: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now }
 });
 
